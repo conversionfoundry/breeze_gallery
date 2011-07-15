@@ -1,0 +1,35 @@
+#left #galleries {
+  margin: 0;
+  padding: 0;
+}
+
+#left #galleries li {
+  display: inline;
+  list-style: none;
+}
+
+#left #galleries li a {
+  display: block;
+  background: #ccc;
+  margin: 0px 0px 8px;
+  padding: 8px;
+  color: #222;
+  text-decoration: none;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+}
+
+#left #galleries li a strong {
+  display: block;
+  text-transform: uppercase;
+}
+
+#left #galleries li a code {
+  display: block;
+  font-size: 85%;
+  color: #666;
+}
+
+#left #galleries li a:hover { 
+  background: #bbb;
+}

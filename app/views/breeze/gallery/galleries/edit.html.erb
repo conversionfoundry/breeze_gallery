@@ -1,0 +1,13 @@
+<%= breeze_form_for @gallery, :as => :gallery, :url => admin_gallery_gallery_path(@gallery, :format => :js), :remote => true do |form| %>
+  <%= scrollable_layout do %>
+    <h1>Edit gallery</h1>
+    <%= render :partial => "form", :object => form %>
+  <% end %>
+
+  <%= content_tag :div, :class => "fake-right-sidebar" do %>
+    <%= submit_tag "Save", :class => "large green save button" %>
+    <%= content_tag :div, :id => "uploader", "data-session-key" => Rails::Application.config.session_options[:key], "data-session-id" => cookies[Rails::Application.config.session_options[:key]] do %>
+      <%= link_to "Upload image(s)...", new_admin_gallery_gallery_image_path(@gallery), :class => "large upload button" %>
+    <% end %>
+  <% end %>
+<% end %>

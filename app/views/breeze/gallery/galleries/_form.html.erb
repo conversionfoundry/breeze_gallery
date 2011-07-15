@@ -1,0 +1,69 @@
+<%= render "/breeze/admin/shared/error_messages", :target => @gallery, :object_name => :gallery %>
+<%= form.fieldset do %>
+  <%= form.text_field :title %>
+  <%= form.text_field :description %>
+<% end %>
+<div id="assets">
+  <h3>Images</h3>
+  <%= content_tag :div, :class => "assets image-assets" do %>
+    <%= render :partial => "image", :collection => @gallery.images %>
+  <% end %>
+</div>
+    
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+      $('.assets').sortable({
+        update: function(e, ui) {
+          url: ''
+        }
+      });
+
+      $('#header .menu').sortable({
+    update: function(e, ui) {
+      var data = '_method=put';
+      $('#header .menu li a').each(function() { data += '&user[menu_order][]=' + escape($(this).text()); });
+      $.ajax({
+        url:'/admin/users/' + $('meta[name=breeze-user-id]').attr('content') + '/preferences',
+        data: data,
+        type: 'post'
+      });
+    }
+  });
+
+
+    $('.fake-right-sidebar #uploader').each(function() {
+      script_data = {};
+      script_data[$('meta[name=csrf-param]').attr('content')] = $('meta[name=csrf-token]').attr('content');
+      script_data[$(this).attr('data-session-key')] = $(this).attr('data-session-id');
+      $(this).uploadify({
+        uploader:     '/breeze/javascripts/uploadify/uploadify.swf',
+        cancelImg:    '/breeze/images/icons/delete.png',
+        buttonImg:    '/breeze/images/buttons/upload.png',
+        width:        215,
+        height:       40,
+        multi:        true,
+        auto:         true,
+        script:       '<%= admin_gallery_gallery_images_path(@gallery) %>',
+        scriptData:   script_data,
+        fileDataName: 'file',
+        wmode:        'transparent',
+        folder:       '<%= @folder || "/" %>',
+        
+        onComplete: function(event, queue_id, file_obj, response, data) {
+          alert('complete');
+          var id = /id="([^"]+)"/.exec(response);
+          if (id && id[1]) {
+            $('#' + id[1]).remove();
+          }
+          
+          var match = /class="(\w+) asset/.exec(response);
+          var group = match ? match[1] : 'asset';
+          $('#assets .' + group + '-assets').prepend(response);
+          // show_or_hide_asset_section_headings();
+          return true;
+        }
+      });
+ 
+    });
+  });
+</script>

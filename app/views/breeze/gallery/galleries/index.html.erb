@@ -1,0 +1,37 @@
+<% content_for :title, "Galleries" %>
+
+<% content_for :head do %>
+  <%= javascript_include_tag "/breeze/javascripts/galleries" %>
+  <%= stylesheet_link_tag "/breeze/stylesheets/gallery" %>
+
+  <%= stylesheet_link_tag "/breeze/javascripts/jcrop/css/jquery.Jcrop.css", "/breeze/javascripts/uploadify/uploadify.css" %>
+  <%= javascript_include_tag "/breeze/javascripts/assets", "/breeze/javascripts/jcrop/js/jquery.Jcrop.min.js", "/breeze/javascripts/uploadify/swfobject.js", "/breeze/javascripts/uploadify/uploadify.js" %>
+<% end %>
+
+<%= tabbed_layout do %>
+
+<% end %>
+
+<% content_for :left do %>
+  <%= pane_layout do |left| %>
+    <% left.header do %>
+      <h2>Galleries</h2>
+    <% end %>
+    <% left.inner do %>
+      <ul id="galleries">
+        <%= render :partial => "gallery", :collection => @galleries %>
+      </ul>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% content_for :right do %>
+  <%= pane_layout do |right| %>
+    <% right.header do %>
+      <%= link_to "New gallery", new_admin_gallery_gallery_path, :class => "large new gallery button" %>
+    <% end %>
+    <%= right.inner do %>
+    <% end %>
+  <% end %>
+<% end %>
+
