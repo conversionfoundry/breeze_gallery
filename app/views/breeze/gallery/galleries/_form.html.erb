@@ -14,10 +14,14 @@
   $(function() {
       $('.assets').sortable({
         update: function(e, ui) {
-          url: ''
+          $.ajax({
+            url: '',
+            data: '_method=put',
+            type: 'post'
+          });
         }
       });
-
+/*
       $('#header .menu').sortable({
     update: function(e, ui) {
       var data = '_method=put';
@@ -28,7 +32,8 @@
         type: 'post'
       });
     }
-  });
+    });
+    */
 
 
     $('.fake-right-sidebar #uploader').each(function() {
