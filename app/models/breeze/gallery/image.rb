@@ -6,7 +6,7 @@ module Breeze
 
       belongs_to_related :gallery, :class_name => "Breeze::Gallery::Gallery", :inverse_of => :images
 
-      mount_uploader :file, GalleryUploader, :mount_on => :file
+      mount_uploader :file, Breeze::Gallery::GalleryUploader, :mount_on => :file
     end
   end
 end

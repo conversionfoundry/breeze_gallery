@@ -1,6 +1,6 @@
 module Breeze
   module Gallery
-    class ImagesController < ApplicationController
+    class ImagesController < Breeze::Admin::AdminController
       def new
 
       end
