@@ -34,3 +34,7 @@
   background: #bbb;
 }
 
+.thumb-preview {
+  overflow: hidden;
+}
+
