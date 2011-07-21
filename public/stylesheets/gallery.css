@@ -34,7 +34,27 @@
   background: #bbb;
 }
 
-.thumb-preview {
+#edit-thumb {
+  position: relative;
+}
+
+#edit-thumb .full-image {
+  top: 8px;
+  position: absolute;
+}
+
+#edit-thumb .thumb-preview .preview {
   overflow: hidden;
+}
+
+#edit-thumb .thumb-current {
+  position: absolute;
+  left: 520px;
+  top: 8px;
+  width: 222px;
+}
+
+#edit-thumb h3 {
+  text-align: center;
 }
 

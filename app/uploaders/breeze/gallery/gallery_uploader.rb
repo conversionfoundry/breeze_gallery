@@ -3,6 +3,10 @@ module Breeze
     class GalleryUploader < CarrierWave::Uploader::Base
       include CarrierWave::ConditionalVersions
       include CarrierWave::RMagick
+
+      FULL_SIZE  = [ 292, 544 ].freeze unless defined?(FULL_SIZE)
+      THUMB_SIZE = [ 68, 56 ].freeze unless defined?(THUMB_SIZE)
+      PREVIEW_SIZE = [ 134, 98 ].freeze unless defined?(PREVIEW_SIZE)
     
       storage :file
     
@@ -15,15 +19,15 @@ module Breeze
       end
 
       version :full do
-        process :resize_to_limit   => [ 600, 400 ]
+        process :resize_to_limit => FULL_SIZE
       end
 
       version :thumbnail do
-        process :resize_to_fit => [ 48, 48 ]
+        process :resize_to_fill=> THUMB_SIZE
       end
 
-      version :preview   do
-        process :resize_to_limit => [ 224, 224 ]
+      version :preview do
+        process :resize_to_fill => PREVIEW_SIZE
       end
 
       before :cache, :capture_size_before_cache 

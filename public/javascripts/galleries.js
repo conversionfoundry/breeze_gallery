@@ -25,24 +25,6 @@ $(function() {
     return false;
   });
 
-  function showPreview(coords) {
-    alert('preview');
-    if (parseInt(coords.w) > 0) {
-      var rx = 100 / coords.w;
-      var ry = 100 / coords.h;
-
-      $('#preview').css({
-        width: Math.round(rx * boundx) + 'px',
-        height: Math.round(ry * boundy) + 'px',
-			  marginLeft: '-' + Math.round(rx * coords.x) + 'px',
-			  marginTop: '-' + Math.round(ry * coords.y) + 'px'
-      });
-    }
-  }
-
-  var jcrop_api;
-  var bounds, boundx, boundy;
-
   function gallery_editor(options) {
     options = options || {};
     $.get(options.url, function(data) {
@@ -50,11 +32,12 @@ $(function() {
         title: 'Edit Image',
         modal: true,
         width: 752,
-        height: 522,
+        height: 562,
         resizable: false,
         buttons: {
           Cancel: function() {
             $(this).dialog('close');
+            $(this).empty().dialog('destroy');
           },
           OK: function() {
             if (options.ok) {
@@ -65,17 +48,7 @@ $(function() {
           }
         },
         open: function() {
-          $('.image-editor .tabs').tabs();
-          $('#edit-thumb #thumb').Jcrop({
-            onChange: showPreview,
-            onSelect: showPreview,
-            aspectRatio: 1
-          }, function() {
-					  jcrop_api = this;
-					  bounds = jcrop_api.getBounds();
-					  boundx = bounds[0];
-					  boundy = bounds[1];
-				  });
+          open();
         }
       });
     });
