@@ -27,6 +27,13 @@ module Breeze
         @image = Breeze::Gallery::Image.find params[:id]
         @image.try :destroy
       end
+
+      def position
+        @image = Breeze::Gallery::Image.find params[:id]
+        @image.update_attributes params[:image]
+
+        render :nothing => true
+      end
     end
   end
 end

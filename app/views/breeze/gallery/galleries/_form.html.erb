@@ -6,7 +6,7 @@
 <div id="assets">
   <h3>Images</h3>
   <%= content_tag :div, :class => "assets image-assets" do %>
-    <%= render :partial => "image", :collection => @gallery.images %>
+    <%= render :partial => "breeze/gallery/images/image", :collection => @gallery.images %>
   <% end %>
 </div>
     
@@ -14,11 +14,13 @@
   $(function() {
       $('.assets').sortable({
         update: function(e, ui) {
-          $.ajax({
-            url: '',
-            data: '_method=put',
-            type: 'post'
-          });
+          var id = ui.item.first().attr('data-id');
+          var position = ui.item.index();
+           $.ajax({
+             url: '/admin/galleries/galleries/<%= @gallery.id %>/images/' + id + '/position',
+             data: '_method=put&position=' + position,
+             type: 'post'
+           });
         }
       });
 /*
@@ -55,15 +57,12 @@
         folder:       '<%= @folder || "/" %>',
         
         onComplete: function(event, queue_id, file_obj, response, data) {
-          alert('complete');
           var id = /id="([^"]+)"/.exec(response);
           if (id && id[1]) {
             $('#' + id[1]).remove();
           }
           
-          var match = /class="(\w+) asset/.exec(response);
-          var group = match ? match[1] : 'asset';
-          $('#assets .' + group + '-assets').prepend(response);
+          $('#assets .image-assets').append(response);
           // show_or_hide_asset_section_headings();
           return true;
         }

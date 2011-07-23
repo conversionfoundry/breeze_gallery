@@ -3,7 +3,11 @@ Rails.application.routes.draw do
     root :to => "galleries#index"
 
     resources :galleries do
-      resources :images
+      resources :images do
+        member do
+          put :position
+        end
+      end
     end
   end
 end
