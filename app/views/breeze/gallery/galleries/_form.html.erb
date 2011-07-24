@@ -3,12 +3,14 @@
   <%= form.text_field :title %>
   <%= form.text_field :description %>
 <% end %>
-<div id="assets">
-  <h3>Images</h3>
-  <%= content_tag :div, :class => "assets image-assets" do %>
-    <%= render :partial => "breeze/gallery/images/image", :collection => @gallery.images %>
-  <% end %>
-</div>
+
+<% unless @gallery.new_record? %>
+  <div id="assets">
+    <h3>Images</h3>
+    <%= content_tag :div, :class => "assets image-assets" do %>
+      <%= render :partial => "breeze/gallery/images/image", :collection => @gallery.images %>
+    <% end %>
+  </div>
     
 <script type="text/javascript" charset="utf-8">
   $(function() {
@@ -23,20 +25,6 @@
            });
         }
       });
-/*
-      $('#header .menu').sortable({
-    update: function(e, ui) {
-      var data = '_method=put';
-      $('#header .menu li a').each(function() { data += '&user[menu_order][]=' + escape($(this).text()); });
-      $.ajax({
-        url:'/admin/users/' + $('meta[name=breeze-user-id]').attr('content') + '/preferences',
-        data: data,
-        type: 'post'
-      });
-    }
-    });
-    */
-
 
     $('.fake-right-sidebar #uploader').each(function() {
       script_data = {};
@@ -71,3 +59,4 @@
     });
   });
 </script>
+<% end %>
