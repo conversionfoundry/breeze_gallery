@@ -1,0 +1,7 @@
+<% if @gallery.errors.empty? %>
+  close_tab('new_gallery');
+  $('#left #galleries').prepend('<%= escape_javascript render(:partial => "gallery", :object => @gallery) %>');
+  $('#left #galleries a[data-id=<%= @gallery.id %>]').click();
+<% else %>
+  $('#gallery_new').replaceWith('<%= escape_javascript render(:template => "/breeze/gallery/galleries/new") %>');
+<% end %>

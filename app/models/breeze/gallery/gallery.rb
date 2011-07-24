@@ -16,6 +16,8 @@ module Breeze
 
       has_many_related :images, :class_name => "Breeze::Gallery::Image"
 
+      validates_presence_of :title
+      validates_uniqueness_of :title
     end
   end
 end
