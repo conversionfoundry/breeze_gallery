@@ -6,17 +6,12 @@ module Breeze
       end
 
       def create
-        Rails.logger.debug "create".blue
         if (@image = Breeze::Gallery::Image.where(:file => params[:Filename], :folder => params[:folder]).first)
-          Rails.logger.debug "found".red
           @image.file, @image.folder = params[:file], params[:folder]
         else
-          Rails.logger.debug "before from upload".blue
           @image ||= Breeze::Gallery::Image.from_upload params
-          Rails.logger.debug "after from upload".blue
           @image.gallery_id = params[:gallery_id]
-          Rails.logger.debug "after gallery id"
-          Rails.logger.debug @image.gallery_id 
+          @image.position = @image.gallery.images.count
         end
         @image.save
         respond_to do |format|
@@ -36,9 +31,20 @@ module Breeze
 
       def position
         @image = Breeze::Gallery::Image.find params[:id]
-        @image.update_attributes params[:image]
+        @image.update_attributes params
+
+        Breeze::Gallery::Image.where(:gallery_id => params[:gallery_id]).where(:position.gte => @image.position).each do |image|
+          unless image._id == @image._id
+            image.position += 1
+            image.save
+          end
+        end
 
         render :nothing => true
+      end
+
+      def crop
+
       end
     end
   end

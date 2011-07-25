@@ -68,11 +68,22 @@
     </div>
     <div id="edit-feature">
       <div class="full-image">
-        <%= image_tag @image.file.url, :id => :feature, :width => 512, :height => 440 %>
+       <%= image_tag @image.file.url, :id => :feature, :width => 512, :height => 440 %>
       </div>
       <div class="feature-current">
         <h3>Current Feature</h3>
         <%= image_tag @image.file.url(:preview), :id => :current %>
+      </div>
+      <div class="feature-preview">
+        <h3>Preview (New Feature)</h3>
+        <div class="preview" style="<%= "width: #{Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width}px; height: #{Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height}px" %>">
+          <%= image_tag @image.file.url, :id => :preview %>
+        </div>
+      </div>
+      <div class="action">
+        <p>
+          <a href="#" class="large button">Change</a>
+        </p>
       </div>
     </div>
   </div>
@@ -80,12 +91,12 @@
 
 <script type="text/javascript">
 
-  function showPreview(coords) {
+  function showPreview(coords, width, height, selector) {
     if (parseInt(coords.w) > 0) {
-      var rx = <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.width %> / coords.w;
-      var ry = <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.height %>  / coords.h;
+      var rx = width / coords.w;
+      var ry = height / coords.h;
 
-      $('.thumb-preview #preview').css({
+      $(selector).css({
         width: Math.round(rx * 512) + 'px',
         height: Math.round(ry * 440) + 'px',
 			  marginLeft: '-' + Math.round(rx * coords.x) + 'px',
@@ -94,24 +105,47 @@
     }
   }
 
+  function updateThumb(coords) {
+    showPreview(coords, 
+        <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.width %>, 
+        <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.height %>, 
+        '.thumb-preview #preview');
+  }
+
+  function updateFeature(coords) {
+    showPreview(coords, 
+        <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width %>, 
+        <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height %>, 
+        '');
+  }
+
   function open() {
     $tabs = $('.gallery-editor .tabs').tabs({
       select: function(event, ui) {
       if (ui.index == 1) {
         $('#edit-thumb .full-image #thumb').Jcrop({
-          onChange: showPreview,
-          onSelect: showPreview,
+          onChange: updateThumb,
+          onSelect: updateThumb,
           aspectRatio: <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.aspect_ratio %>
         });
-        }
         } else if (ui.index == 2) {
           $('#edit-feature .full-image #feature').Jcrop({
             onChange: updateFeature,
             onSelect: updateFeature,
             aspectRatio: <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.aspect_ratio %>
           });
-
+          }
         }
+        });
+
+    $('#edit-thumb .action a.button').click(function(e) {
+      alert('thumb');
+    });
+
+    $('#edit-feature .action a.button').click(function(e) {
+      $.post('/admin/galleries/galleries/' + '/images/' + '/crop', function(data) {
+        $('.result').html(data);
+      });
     });
   }
 </script>

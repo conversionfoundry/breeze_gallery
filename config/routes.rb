@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       resources :images do
         member do
           put :position
+          put :crop
         end
       end
     end

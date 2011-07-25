@@ -8,7 +8,7 @@
   <div id="assets">
     <h3>Images</h3>
     <%= content_tag :div, :class => "assets image-assets" do %>
-      <%= render :partial => "breeze/gallery/images/image", :collection => @gallery.images %>
+      <%= render :partial => "breeze/gallery/images/image", :collection => @gallery.images.ordered %>
     <% end %>
   </div>
     
