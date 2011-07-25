@@ -6,11 +6,17 @@ module Breeze
       end
 
       def create
+        Rails.logger.debug "create".blue
         if (@image = Breeze::Gallery::Image.where(:file => params[:Filename], :folder => params[:folder]).first)
+          Rails.logger.debug "found".red
           @image.file, @image.folder = params[:file], params[:folder]
         else
+          Rails.logger.debug "before from upload".blue
           @image ||= Breeze::Gallery::Image.from_upload params
+          Rails.logger.debug "after from upload".blue
           @image.gallery_id = params[:gallery_id]
+          Rails.logger.debug "after gallery id"
+          Rails.logger.debug @image.gallery_id 
         end
         @image.save
         respond_to do |format|

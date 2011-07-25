@@ -45,12 +45,25 @@
 
 #edit-thumb .thumb-preview .preview {
   overflow: hidden;
+  width: 50%;
+  margin: auto;
 }
 
 #edit-thumb .thumb-current {
   position: absolute;
   left: 520px;
   top: 8px;
+  width: 222px;
+}
+
+#edit-thumb .thumb-current img, #edit-thumb .thumb-preview img {
+  border: 1px solid black;
+}
+
+#edit-thumb .thumb-preview {
+  position: absolute;
+  left: 520px;
+  top: 208px;
   width: 222px;
 }
 

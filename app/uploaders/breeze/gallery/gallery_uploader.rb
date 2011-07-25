@@ -7,6 +7,7 @@ module Breeze
       FULL_SIZE  = [ 292, 544 ].freeze unless defined?(FULL_SIZE)
       THUMB_SIZE = [ 68, 56 ].freeze unless defined?(THUMB_SIZE)
       PREVIEW_SIZE = [ 134, 98 ].freeze unless defined?(PREVIEW_SIZE)
+      BREEZE_THUMB_SIZE = [ 128, 128 ].freeze unless defined?(BREEZE_THUMB_SIZE)
     
       storage :file
     
@@ -23,7 +24,11 @@ module Breeze
       end
 
       version :thumbnail do
-        process :resize_to_fill=> THUMB_SIZE
+        process :resize_to_fill => THUMB_SIZE
+      end
+
+      version :breeze_thumb do
+        process :resize_to_fill => BREEZE_THUMB_SIZE
       end
 
       version :preview do

@@ -60,9 +60,20 @@
           <%= image_tag @image.file.url, :id => :preview %>
         </div>
       </div>
+      <div class="action">
+        <p>
+          <a href="#" class="large button">Change</a>
+        </p>
+      </div>
     </div>
     <div id="edit-feature">
-      <p>Blah</p>
+      <div class="full-image">
+        <%= image_tag @image.file.url, :id => :feature, :width => 512, :height => 440 %>
+      </div>
+      <div class="feature-current">
+        <h3>Current Feature</h3>
+        <%= image_tag @image.file.url(:preview), :id => :current %>
+      </div>
     </div>
   </div>
 <% end %>
@@ -93,7 +104,14 @@
           aspectRatio: <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.aspect_ratio %>
         });
         }
-      }
+        } else if (ui.index == 2) {
+          $('#edit-feature .full-image #feature').Jcrop({
+            onChange: updateFeature,
+            onSelect: updateFeature,
+            aspectRatio: <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.aspect_ratio %>
+          });
+
+        }
     });
   }
 </script>
