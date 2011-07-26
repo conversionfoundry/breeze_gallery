@@ -44,7 +44,8 @@ module Breeze
       end
 
       def crop
-
+        @image = Breeze::Gallery::Image.find params[:id]
+        @image.update_attributes params
       end
     end
   end

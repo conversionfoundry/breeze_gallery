@@ -71,3 +71,10 @@
   text-align: center;
 }
 
+#edit-thumb .action, #edit-feature .action {
+  position: absolute;
+  left: 520px;
+  top: 408px;
+  width: 222px;
+}
+

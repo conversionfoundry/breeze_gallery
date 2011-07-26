@@ -143,9 +143,11 @@
     });
 
     $('#edit-feature .action a.button').click(function(e) {
-      $.post('/admin/galleries/galleries/' + '/images/' + '/crop', function(data) {
-        $('.result').html(data);
-      });
+      $.ajax({
+             url: '/admin/galleries/galleries/<%= @image.gallery_id %>/images/<%= @image._id %>/crop',
+             data: '_method=put&crop[width]=100',
+             type: 'post'
+           });
     });
   }
 </script>
