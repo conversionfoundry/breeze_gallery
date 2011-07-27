@@ -61,11 +61,8 @@ $(function() {
 });
 
   function uploadify() {
-    alert($('.fake-right-sidebar object').remove().length);
-
       $('.fake-right-sidebar #uploader').each(function() {
         if ($(this).closest('.tab-pane').is(':visible')) {
-          alert($(this).parent().parent().parent().attr('id').slice(4));
         gallery_id = $(this).parent().parent().parent().attr('id').slice(4);
         script_data = {};
         script_data[$('meta[name=csrf-param]').attr('content')] = $('meta[name=csrf-token]').attr('content');

@@ -19,35 +19,55 @@ module Breeze
       
         def reprocess_file
           unless crop.blank?
-            target_width, target_height = @crop[:target_width].to_i, @crop[:target_height].to_i
-          if target_width > 0 && target_height > 0 && (target_width < image_width || target_height || image_height)
-            w, h = image_width, image_height
-            
-            file.manipulate! do |img|
-              if r = selection_rect
-                img.crop! r[:x], r[:y], r[:width], r[:height]
-                w, h = r[:width], r[:height]
-              end
-              
-              if target_width > 0 && target_height > 0 && (w > target_width || h > target_height)
-                if @crop[:mode].to_s == "resize_to_fit" then
-                  img.resize_to_fit! target_width, target_height
-                else
-                  img.resize_to_fill! target_width, target_height
+            Rails.logger.debug "reprocess_file".to_s
+            Rails.logger.debug file.full.methods.to_s
+            Rails.logger.debug file.versions.count.to_s
+
+            file.versions.each do |name, v|
+              if name == :preview
+                Rails.logger.debug name.to_s.red
+                Rails.logger.debug v.to_s.blue
+                
+                file.manipulate! do |image|
+                v.manipulate! do |img|
+                  img = image.crop(20, 20, 67, 49)
+                  img.resize!(134, 98)
+                  img
+                end
+                image
                 end
               end
-              
-              write_attribute :image_width, img.columns
-              write_attribute :image_height, img.rows
-              
-              img
             end
+
+        #     target_width, target_height = @crop[:target_width].to_i, @crop[:target_height].to_i
+        #   if target_width > 0 && target_height > 0 && (target_width < image_width || target_height || image_height)
+        #     w, h = image_width, image_height
             
-            file.versions.each do |name, v|
-              v.cache! file.file
-              v.store!
-            end
-        end
+        #     file.manipulate! do |img|
+        #       if r = selection_rect
+        #         img.crop! r[:x], r[:y], r[:width], r[:height]
+        #         w, h = r[:width], r[:height]
+        #       end
+              
+        #       if target_width > 0 && target_height > 0 && (w > target_width || h > target_height)
+        #         if @crop[:mode].to_s == "resize_to_fit" then
+        #           img.resize_to_fit! target_width, target_height
+        #         else
+        #           img.resize_to_fill! target_width, target_height
+        #         end
+        #       end
+              
+        #       write_attribute :image_width, img.columns
+        #       write_attribute :image_height, img.rows
+              
+        #       img
+        #     end
+            
+        #     file.versions.each do |name, v|
+        #       v.cache! file.file
+        #       v.store!
+        #     end
+        # end
 
           end
         end
