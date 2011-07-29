@@ -43,8 +43,13 @@
   position: absolute;
 }
 
-#edit-thumb .thumb-preview .preview, #edit-feature .feature-preview {
+#edit-thumb .thumb-preview .preview, #edit-feature .feature-preview .preview {
   overflow: hidden;
+  width: 50%;
+  margin: auto;
+}
+
+#edit-thumb .thumb-current .current, #edit-feature .feature-current .current {
   width: 50%;
   margin: auto;
 }
@@ -57,7 +62,6 @@
 }
 
 #edit-thumb .thumb-current img, #edit-thumb .thumb-preview img {
-  border: 1px solid black;
 }
 
 #edit-thumb .thumb-preview, #edit-feature .feature-preview {

@@ -28,7 +28,7 @@ module Breeze
       end
 
       version :breeze_thumb do
-        process :resize_to_fill => BREEZE_THUMB_SIZE
+        process :resize_to_limit => BREEZE_THUMB_SIZE
       end
 
       version :preview do

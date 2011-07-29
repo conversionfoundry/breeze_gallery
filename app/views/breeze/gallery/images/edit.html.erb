@@ -48,16 +48,18 @@
     </div>
     <div id="edit-thumb">
       <div class="full-image">
-        <%= image_tag @image.file.url, :id => :thumb, :width => @image.image_width, :height => @image.image_height %>
+        <%= image_tag @image.file.url(:full), :id => :thumb, :width => @image.image_width, :height => @image.image_height %>
       </div>
       <div class="thumb-current">
         <h3>Current Thumb</h3>
-        <%= image_tag @image.file.url(:thumbnail), :id => :current %>
+        <div class="current" style="<%= "width: #{Breeze::Gallery::GalleryUploader::THUMB_SIZE.width}px; height: #{Breeze::Gallery::GalleryUploader::THUMB_SIZE.height}px" %>">
+          <%= image_tag @image.file.url(:thumbnail), :id => :current %>
+        </div>
       </div>
       <div class="thumb-preview">
         <h3>Preview (New Thumb)</h3>
         <div class="preview" style="<%= "width: #{Breeze::Gallery::GalleryUploader::THUMB_SIZE.width}px; height: #{Breeze::Gallery::GalleryUploader::THUMB_SIZE.height}px" %>">
-          <%= image_tag @image.file.url, :id => :preview %>
+          <%= image_tag @image.file.url(:full), :id => :preview %>
         </div>
       </div>
       <div class="action">
@@ -68,16 +70,18 @@
     </div>
     <div id="edit-feature">
       <div class="full-image">
-        <%= image_tag @image.file.url, :id => :feature, :width => @image.image_width, :height => @image.image_height %>
+        <%= image_tag @image.file.url(:full), :id => :feature, :width => @image.image_width, :height => @image.image_height %>
       </div>
       <div class="feature-current">
         <h3>Current Feature</h3>
-        <%= image_tag @image.file.url(:preview), :id => :current %>
+        <div class="current" style="<%= "width: #{Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width}px; height: #{Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height}px" %>">
+          <%= image_tag @image.file.url(:preview), :id => :current %>
+        </div>
       </div>
       <div class="feature-preview">
         <h3>Preview (New Feature)</h3>
         <div class="preview" style="<%= "width: #{Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width}px; height: #{Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height}px" %>">
-          <%= image_tag @image.file.url, :id => :preview %>
+          <%= image_tag @image.file.url(:full), :id => :preview %>
         </div>
       </div>
       <div class="action">
@@ -90,15 +94,17 @@
 <% end %>
 
 <script type="text/javascript">
+  var width = 512;
+  var height = 440;
 
-  function showPreview(coords, width, height, selector) {
+  function showPreview(coords, width, height, selector, api) {
     if (parseInt(coords.w) > 0) {
       var rx = width / coords.w;
       var ry = height / coords.h;
 
       $(selector).css({
-        width: Math.round(rx * 1600) + 'px',
-        height: Math.round(ry * 1200) + 'px',
+        width: Math.round(rx * api.getBounds()[0]) + 'px',
+        height: Math.round(ry * api.getBounds()[1]) + 'px',
 			  marginLeft: '-' + Math.round(rx * coords.x) + 'px',
 			  marginTop: '-' + Math.round(ry * coords.y) + 'px'
       });
@@ -109,45 +115,76 @@ function updateThumb(coords) {
     showPreview(coords, 
         <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.width %>, 
         <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.height %>, 
-        '.thumb-preview #preview');
+        '.thumb-preview #preview',
+        thumb_api);
   }
 
   function updateFeature(coords) {
     showPreview(coords, 
         <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width %>, 
         <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height %>, 
-        '.feature-preview #preview');
+        '.feature-preview #preview',
+        feature_api);
   }
 
-  var thumb_api;
+  function updateFull(coords) {
+    showPreview(coords, 
+        <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width %>, 
+        <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height %>, 
+        '.feature-preview #previe',
+        full_api);
+  }
+
+  var thumb_api, preview_api, full_api;
+  var first_time_thumb = true;
+  var first_time_preview = true;
 
   function open() {
     $tabs = $('.gallery-editor .tabs').tabs({
       select: function(event, ui) {
-      if (ui.index == 1) {
+      if (ui.index == 1 && first_time_thumb) {
         $('#edit-thumb .full-image img').Jcrop({
-          boxWidth: 512,
-          boxHeight: 440,
+          boxWidth: width,
+          boxHeight: height,
           onChange: updateThumb,
           onSelect: updateThumb,
           aspectRatio: <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.aspect_ratio %>
           }, function() {
             thumb_api = this;
           });
-        } else if (ui.index == 2) {
+          first_time_thumb = false;
+        } else if (ui.index == 2 && first_time_preview) {
         $('#edit-feature .full-image #feature').Jcrop({
-            boxWidth: 512,
-            boxHeight: 440,
+            boxWidth: width,
+            boxHeight: height,
             onChange: updateFeature,
             onSelect: updateFeature,
             aspectRatio: <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.aspect_ratio %>
-          });
+            }, function() {
+              feature_api = this; 
+            });
+          first_time_preview = false;
           }
         }
-        });
+    });
+
+        $('.full-preview img').Jcrop({
+          boxWidth: width,
+          boxHeight: height,
+          onChange: updateFull,
+          onSelect: updateFull,
+          aspectRatio: <%= Breeze::Gallery::GalleryUploader::FULL_SIZE.aspect_ratio %>
+          }, function() {
+            full_api = this;
+          });
+
 
     $('#edit-thumb .action a.button').click(function(e) {
-      alert('thumb');
+        $.ajax({
+            url: '/admin/galleries/galleries/<%= @image.gallery_id %>/images/<%= @image._id %>/crop',
+             data: '_method=put&crop[width]=100',
+             type: 'post' 
+        });
     });
 
     $('#edit-feature .action a.button').click(function(e) {
