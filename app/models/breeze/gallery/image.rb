@@ -19,19 +19,14 @@ module Breeze
       
         def reprocess_file
           unless crop.blank?
-            Rails.logger.debug "reprocess_file".to_s
-            Rails.logger.debug file.full.methods.to_s
-            Rails.logger.debug file.versions.count.to_s
 
             file.versions.each do |name, v|
-              if name == :preview
-                Rails.logger.debug name.to_s.red
-                Rails.logger.debug v.to_s.blue
+              if name.to_s == crop[:version]
                 
                 file.manipulate! do |image|
                 v.manipulate! do |img|
-                  img = image.crop(20, 20, 67, 49)
-                  img.resize!(134, 98)
+                  img = image.crop(crop[:x].to_i, crop[:y].to_i, crop[:w].to_i, crop[:h].to_i)
+                  img.resize!(crop[:width].to_i, crop[:height].to_i)
                   img
                 end
                 image

@@ -34,11 +34,15 @@
   background: #bbb;
 }
 
+#edit-image {
+  position: relative;
+}
+
 #edit-thumb, #edit-feature {
   position: relative;
 }
 
-#edit-thumb .full-image, #edit-feature .full-image {
+#edit-thumb .full-image, #edit-feature .full-image, #edit-image .full-preview {
   top: 8px;
   position: absolute;
 }
@@ -61,6 +65,19 @@
   width: 222px;
 }
 
+#edit-image .properties {
+  position: absolute;
+  left: 520px;
+}
+
+#edit-image .image-name {
+  width: 222px;
+}
+
+#edit-image textarea {
+  width: 218px;
+}
+
 #edit-thumb .thumb-current img, #edit-thumb .thumb-preview img {
 }
 
@@ -75,10 +92,13 @@
   text-align: center;
 }
 
-#edit-thumb .action, #edit-feature .action {
+#edit-thumb .action, #edit-feature .action, #edit-image .action {
   position: absolute;
   left: 520px;
   top: 408px;
   width: 222px;
 }
 
+.action p {
+  text-align: center;
+}

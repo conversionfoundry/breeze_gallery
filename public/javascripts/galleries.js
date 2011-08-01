@@ -61,6 +61,8 @@ $(function() {
 });
 
   function uploadify() {
+    $('.fake-right-sidebar object#uploaderUploader').remove();
+
       $('.fake-right-sidebar #uploader').each(function() {
         if ($(this).closest('.tab-pane').is(':visible')) {
         gallery_id = $(this).parent().parent().parent().attr('id').slice(4);

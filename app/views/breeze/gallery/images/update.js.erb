@@ -1,0 +1,3 @@
+$('#image_<%= @image.id %>').replaceWith('<%= escape_javascript render(:partial => "image", :object => @image) %>');
+$('#image_edit').closest('.ui-dialog-content').dialog('close').remove();
+

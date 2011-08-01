@@ -11,6 +11,7 @@ module Breeze
         else
           @image ||= Breeze::Gallery::Image.from_upload params
           @image.gallery_id = params[:gallery_id]
+          @image.folder =  "images/galleries/#{@image.gallery.title}/"
           @image.position = @image.gallery.images.count
         end
         @image.save
@@ -43,9 +44,16 @@ module Breeze
         render :nothing => true
       end
 
+      def update 
+        @image = Breeze::Gallery::Image.find params[:id]
+        @image.update_attributes params[:image]
+      end
+
       def crop
         @image = Breeze::Gallery::Image.find params[:id]
         @image.update_attributes params
+
+        render params[:crop][:version]
       end
     end
   end

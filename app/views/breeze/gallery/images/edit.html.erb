@@ -8,43 +8,23 @@
     <div id="edit-image">
       <%= content_tag :div, :class => "full-preview" do %>
         <%= content_tag :div, :class => "img" do %>
-          <%= image_tag @image.file.url, :width => @image.image_width, :height => @image.image_height %>
+          <%= image_tag @image.file.url(:full), :width => @image.image_width, :height => @image.image_height %>
         <% end %>
       <% end %>
-      <%= form_for @image, :as => :image, :url => admin_asset_path(@image, :format => :js), :remote => true do |form| %>
+      <%= form_for @image, :as => :image, :url => admin_gallery_gallery_image_path(@image, :format => :js), :remote => true do |form| %>
         <div class="properties">
-          <h3 class="image-name">Name/description</h3>
+          <h3 class="image-name">Title/description</h3>
           <div class="image-name">
-            <p><label for="asset_basename">Filename</label> <%= form.text_field :basename %></p>
             <p><label for="asset_title">Title</label> <%= form.text_field :title %></p>
             <p><label for="asset_description">Description</label> <%= form.text_area :description, :rows => 3 %></p>
           </div>
-          <h3 class="image-current-size">Current Size</h3>
-          <div class="image-current-size">
-            <p class="dimensions"><%= form.text_field :image_width, :disabled => true %> &times; <%= form.text_field :image_height, :disabled => true %> pixels</p>
-          </div>
-          <h3 class="image-selection">Selection</h3>
-          <%= hidden_field_tag "asset[crop][selection_x]" %>
-          <%= hidden_field_tag "asset[crop][selection_y]" %>
-          <div class="image-selection">
-            <p class="dimensions"><%= text_field_tag "asset[crop][selection_width]" %> &times; <%= text_field_tag "asset[crop][selection_height]" %> pixels</p>
-          </div>
-          <h3 class="image-crop"><%= check_box_tag "asset[crop][resize]" %> Resize&hellip;</h3>
-          <div class="image-crop" style="display: none">
-            <p class="dimensions"><%= text_field_tag "asset[crop][target_width]", @image.image_width %> &times; <%= text_field_tag "asset[crop][target_height]", @image.image_height %> pixels</p>
-            <ul class="radio">
-              <li><%= radio_button_tag "asset[crop][mode]", "crop", true %> Force aspect ratio</li>
-              <li><%= radio_button_tag "asset[crop][mode]", "resize_to_fit" %> Resize to fit</li>
-              <li><%= radio_button_tag "asset[crop][mode]", "resize_to_fill" %> Resize and crop to fit</li>
-            </ul>
-          </div>
-          <h3 class="image-dimensions">Final dimensions</h3>
-          <div class="image-dimensions">
-            <p class="dimensions"><%= text_field_tag "asset[crop][final_width]", @image.image_width, :disabled => true %> &times; <%= text_field_tag "asset[crop][final_height]", @image.image_height, :disabled => true %> pixels</p>
-            <p><a href="#" class="large preview button">Preview</a></p>
-          </div>
         </div>
       <% end %>
+      <div class="action">
+        <p>
+          <a href="#" class="large button">Crop Image</a>
+        </p>
+      </div>
     </div>
     <div id="edit-thumb">
       <div class="full-image">
@@ -64,7 +44,7 @@
       </div>
       <div class="action">
         <p>
-          <a href="#" class="large button">Change</a>
+          <a href="#" class="large button">Crop Thumbnail</a>
         </p>
       </div>
     </div>
@@ -86,7 +66,7 @@
       </div>
       <div class="action">
         <p>
-          <a href="#" class="large button">Change</a>
+          <a href="#" class="large button">Crop Feature</a>
         </p>
       </div>
     </div>
@@ -101,18 +81,23 @@
     if (parseInt(coords.w) > 0) {
       var rx = width / coords.w;
       var ry = height / coords.h;
+    
+      var offset_x = Math.round(rx * coords.x);
+      var offset_y = Math.round(ry * coords.y);
 
       $(selector).css({
         width: Math.round(rx * api.getBounds()[0]) + 'px',
         height: Math.round(ry * api.getBounds()[1]) + 'px',
-			  marginLeft: '-' + Math.round(rx * coords.x) + 'px',
-			  marginTop: '-' + Math.round(ry * coords.y) + 'px'
-      });
+			  marginLeft: '-' + offset_x + 'px',
+			  marginTop: '-' + offset_y + 'px'
+        });
+
+      return [coords.x, coords.y, coords.w, coords.h];
     }
   }
 
 function updateThumb(coords) {
-    showPreview(coords, 
+    thumb_offset = showPreview(coords, 
         <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.width %>, 
         <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.height %>, 
         '.thumb-preview #preview',
@@ -120,7 +105,7 @@ function updateThumb(coords) {
   }
 
   function updateFeature(coords) {
-    showPreview(coords, 
+    preview_offset = showPreview(coords, 
         <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width %>, 
         <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height %>, 
         '.feature-preview #preview',
@@ -128,7 +113,7 @@ function updateThumb(coords) {
   }
 
   function updateFull(coords) {
-    showPreview(coords, 
+    full_offset = showPreview(coords, 
         <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width %>, 
         <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height %>, 
         '.feature-preview #previe',
@@ -138,6 +123,7 @@ function updateThumb(coords) {
   var thumb_api, preview_api, full_api;
   var first_time_thumb = true;
   var first_time_preview = true;
+  var thumb_offset, preview_offset, full_offset;
 
   function open() {
     $tabs = $('.gallery-editor .tabs').tabs({
@@ -182,7 +168,7 @@ function updateThumb(coords) {
     $('#edit-thumb .action a.button').click(function(e) {
         $.ajax({
             url: '/admin/galleries/galleries/<%= @image.gallery_id %>/images/<%= @image._id %>/crop',
-             data: '_method=put&crop[width]=100',
+             data: '_method=put&crop[version]=thumbnail&crop[width]=<%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.width %>&crop[height]= <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.height %>&crop[x]=' + thumb_offset[0] + '&crop[y]=' + thumb_offset[1] + '&crop[w]=' + thumb_offset[2] + '&crop[h]=' + thumb_offset[3],
              type: 'post' 
         });
     });
@@ -190,7 +176,15 @@ function updateThumb(coords) {
     $('#edit-feature .action a.button').click(function(e) {
       $.ajax({
              url: '/admin/galleries/galleries/<%= @image.gallery_id %>/images/<%= @image._id %>/crop',
-             data: '_method=put&crop[width]=100',
+             data: '_method=put&crop[version]=preview&crop[width]=<%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width %>&crop[height]= <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height %>&crop[x]=' + preview_offset[0] + '&crop[y]=' + preview_offset[1] + '&crop[w]=' + preview_offset[2] + '&crop[h]=' + preview_offset[3],
+             type: 'post'
+           });
+      });
+
+    $('#edit-image .action a.button').click(function(e) {
+      $.ajax({
+             url: '/admin/galleries/galleries/<%= @image.gallery_id %>/images/<%= @image._id %>/crop',
+             data: '_method=put&crop[version]=full&crop[width]=' + full_offset[2] + '&crop[height]=' + full_offset[3] + '&crop[x]=' + full_offset[0] + '&crop[y]=' + full_offset[1] + '&crop[w]=' + full_offset[2] + '&crop[h]=' + full_offset[3],
              type: 'post'
            });
     });

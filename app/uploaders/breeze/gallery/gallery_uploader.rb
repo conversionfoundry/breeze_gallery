@@ -12,7 +12,8 @@ module Breeze
       storage :file
     
       def store_path(for_file = filename)
-        File.join *[version_name ? "images/galleries/#{model.gallery.title}/#{version_name}" : "images/galleries/#{model.gallery.title}", full_filename(for_file)].compact
+        File.join *[version_name ? "#{model.folder}#{version_name}" : "#{model.folder}", full_filename(for_file)].compact
+        # File.join *[version_name ? "images/galleries/#{model.gallery.title}/#{version_name}" : "images/galleries/#{model.gallery.title}", full_filename(for_file)].compact
       end
       
       def full_filename(for_file)
