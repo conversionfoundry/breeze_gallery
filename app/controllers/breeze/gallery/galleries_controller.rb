@@ -23,6 +23,11 @@ module Breeze
         @gallery.attributes = params[:gallery]
         @gallery.save
       end
+
+      def destroy
+        @gallery = Breeze::Gallery::Gallery.find params[:id]
+        @gallery.destroy
+      end
     end
   end
 end

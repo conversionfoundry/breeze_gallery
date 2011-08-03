@@ -1,0 +1,6 @@
+<% if @gallery.errors.empty? %>
+  $('#left #galleries li a[data-id=<%= @gallery.id %>] strong, a[href=#tab_<%= @gallery.id %>]').text('<%= escape_javascript @gallery.title %>');
+  $.flashMessage('This gallery has been updated.', { auto: true });
+<% end %>
+$('#tab_<%= @gallery.id%>').html('<%= escape_javascript render(:template => "/breeze/gallery/galleries/edit") %>');
+renumber_fields('#tab_<%= @gallery.id %>');

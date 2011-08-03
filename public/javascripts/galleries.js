@@ -82,6 +82,9 @@ $(function() {
           fileDataName: 'file',
           wmode:        'transparent',
           folder:       '/', //'<%= @folder || "/" %>',
+          fileExt:      '*.jpg;*.jpeg;*.gif;*.png',
+          fileDesc:     'Image Files',
+          
         
           onComplete: function(event, queue_id, file_obj, response, data) {
             var id = /id="([^"]+)"/.exec(response);

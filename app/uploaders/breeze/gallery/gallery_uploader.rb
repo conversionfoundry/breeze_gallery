@@ -20,6 +20,10 @@ module Breeze
         for_file
       end
 
+      def extension_white_list
+        %w(jpg jpeg gif png)
+      end
+
       version :full do
         process :resize_to_limit => FULL_SIZE
       end

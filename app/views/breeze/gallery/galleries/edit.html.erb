@@ -6,6 +6,7 @@
 
   <%= content_tag :div, :class => "fake-right-sidebar" do %>
     <%= submit_tag "Save", :class => "large green save button" %>
+    <%= link_to "Delete", admin_gallery_gallery_path(@gallery, :format => :js), :method => :delete, :remote => true, :class => "large red delete button" %>
     <%= content_tag :div, :id => "uploader", "data-session-key" => Rails::Application.config.session_options[:key], "data-session-id" => cookies[Rails::Application.config.session_options[:key]] do %>
       <%= link_to "Upload image(s)...", new_admin_gallery_gallery_image_path(@gallery), :class => "large upload button" %>
     <% end %>

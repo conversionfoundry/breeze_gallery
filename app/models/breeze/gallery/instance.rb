@@ -6,7 +6,7 @@ module Breeze
       field :template
       belongs_to_related :gallery, :class_name => "Breeze::Gallery::Gallery"
 
-      TEMPLATES = [ :three_up, :nine_up, :in_page_gallery ]
+      TEMPLATES = [ :four_wide, :all_images ]
 
       def self.label
         "Gallery"
