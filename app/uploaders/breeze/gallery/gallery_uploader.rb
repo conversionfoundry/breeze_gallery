@@ -4,8 +4,8 @@ module Breeze
       include CarrierWave::ConditionalVersions
       include CarrierWave::RMagick
 
-      FULL_SIZE  = [ 292, 544 ].freeze unless defined?(FULL_SIZE)
-      THUMB_SIZE = [ 68, 56 ].freeze unless defined?(THUMB_SIZE)
+      FULL_SIZE  = [ 936, 344 ].freeze unless defined?(FULL_SIZE)
+      THUMB_SIZE = [ 110, 80 ].freeze unless defined?(THUMB_SIZE)
       PREVIEW_SIZE = [ 134, 98 ].freeze unless defined?(PREVIEW_SIZE)
       BREEZE_THUMB_SIZE = [ 128, 128 ].freeze unless defined?(BREEZE_THUMB_SIZE)
     
