@@ -5,8 +5,10 @@ Rails.application.routes.draw do
     resources :galleries do
       resources :images do
         member do
-          put :position
           put :crop
+        end
+        collection do
+          put :reorder
         end
       end
     end

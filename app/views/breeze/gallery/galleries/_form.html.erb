@@ -18,11 +18,9 @@
 
       $('.assets').sortable({
         update: function(e, ui) {
-          var id = ui.item.first().attr('data-id');
-          var position = ui.item.index();
            $.ajax({
-             url: '/admin/galleries/galleries/<%= @gallery.id %>/images/' + id + '/position',
-             data: '_method=put&position=' + position,
+             url: '/admin/galleries/galleries/<%= @gallery.id %>/images/reorder.js',
+             data: '_method=put&' + $(this).sortable('serialize'),
              type: 'post'
            });
         }

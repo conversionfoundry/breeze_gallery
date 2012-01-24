@@ -30,17 +30,10 @@ module Breeze
         @image.try :destroy
       end
 
-      def position
-        @image = Breeze::Gallery::Image.find params[:id]
-        @image.update_attributes params
-
-        Breeze::Gallery::Image.where(:gallery_id => params[:gallery_id]).where(:position.gte => @image.position).each do |image|
-          unless image._id == @image._id
-            image.position += 1
-            image.save
-          end
+      def reorder
+        params[:image].each_with_index do |id, index|
+          Image.find(id).update_attributes :position => index
         end
-
         render :nothing => true
       end
 

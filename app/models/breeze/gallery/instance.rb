@@ -25,7 +25,7 @@ module Breeze
 
 #        returning("") do |str|
  #         str << "<div class='gallery'>"
-#        gallery.images.each do |image|
+#        gallery.images.each do |image:Ack 
  #           str << "<img src='#{image.file.url(:thumbnail)}' />"
   #        end
    #       str << "</div>"
