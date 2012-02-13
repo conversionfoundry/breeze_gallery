@@ -2,7 +2,7 @@ module Breeze
   module Gallery
     class GalleriesController < Breeze::Admin::AdminController
       def index
-        @galleries = Breeze::Gallery::Gallery.all
+        @galleries = Breeze::Gallery::Gallery.order_by([:title, :asc])
       end
 
       def new

@@ -1,1 +1,1 @@
-$('#edit-image .full-preview .img').html('<%= image_tag @image.file.url(:full) %>');
+$('#edit-image .full-preview .img').html('<%= image_tag @image.file.url(:full), :style => "max-width: 512px" %>');

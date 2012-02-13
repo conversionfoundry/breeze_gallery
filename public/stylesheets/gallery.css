@@ -99,6 +99,11 @@
   width: 222px;
 }
 
+#edit-image .action {
+  top: 378px;
+}
+
+
 .action p {
   text-align: center;
 }

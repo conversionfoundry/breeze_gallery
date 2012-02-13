@@ -11,7 +11,7 @@ module Breeze
         else
           @image ||= Breeze::Gallery::Image.from_upload params
           @image.gallery_id = params[:gallery_id]
-          @image.folder =  "images/galleries/#{@image.gallery.title}/"
+          @image.folder =  "images/galleries/#{@image.gallery.id}/"
           @image.position = @image.gallery.images.count
         end
         @image.save

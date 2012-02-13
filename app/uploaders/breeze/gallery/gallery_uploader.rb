@@ -25,7 +25,7 @@ module Breeze
       end
 
       version :full do
-        process :resize_to_limit => FULL_SIZE
+        process :resize_to_fill => FULL_SIZE
       end
 
       version :thumbnail do

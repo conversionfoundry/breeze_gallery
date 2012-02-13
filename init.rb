@@ -7,6 +7,6 @@ Breeze.hook :admin_menu do |menu, user|
 end
 
 Breeze.hook :content_template_paths do |klass, paths|
-  paths << "../../../breeze_gallery/app/views/breeze/gallery/templates/gallery" if klass.to_s == "Breeze::Gallery::Instance"
+  paths << "../../../breeze_gallery/app/views/breeze/gallery/templates" if klass.to_s == "Breeze::Gallery::Instance"
   paths
 end

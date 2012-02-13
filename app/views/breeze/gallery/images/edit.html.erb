@@ -3,12 +3,14 @@
     <ul>
       <li><a href="#edit-image">Edit Image</a></li>
       <li><a href="#edit-thumb">Edit Thumb</a></li>
-      <li><a href="#edit-feature">Edit Feature</a></li>
+      <% if false %>
+        <li><a href="#edit-feature">Edit Feature</a></li>
+      <% end %>
     </ul>
     <div id="edit-image">
       <%= content_tag :div, :class => "full-preview" do %>
         <%= content_tag :div, :class => "img" do %>
-          <%= image_tag @image.file.url(:full), :width => @image.image_width, :height => @image.image_height %>
+          <%= image_tag @image.file.url, :width => @image.image_width, :height => @image.image_height %>
         <% end %>
       <% end %>
       <%= form_for @image, :as => :image, :url => admin_gallery_gallery_image_path(@image, :format => :js), :remote => true do |form| %>
@@ -22,13 +24,16 @@
       <% end %>
       <div class="action">
         <p>
-          <a href="#" class="large button">Crop Image</a>
+          <a href="#" class="large crop button">Crop Full Image</a>
+        </p>
+        <p>
+          <a href="<%= @image.file.url(:full) %>" class="large view button" target="_blank" >View Full Image</a>
         </p>
       </div>
     </div>
     <div id="edit-thumb">
       <div class="full-image">
-        <%= image_tag @image.file.url(:full), :id => :thumb, :width => @image.image_width, :height => @image.image_height %>
+        <%= image_tag @image.file.url, :id => :thumb %>
       </div>
       <div class="thumb-current">
         <h3>Current Thumb</h3>
@@ -39,15 +44,16 @@
       <div class="thumb-preview">
         <h3>Preview (New Thumb)</h3>
         <div class="preview" style="<%= "width: #{Breeze::Gallery::GalleryUploader::THUMB_SIZE.width}px; height: #{Breeze::Gallery::GalleryUploader::THUMB_SIZE.height}px" %>">
-          <%= image_tag @image.file.url(:full), :id => :preview %>
+          <%= image_tag @image.file.url, :id => :preview %>
         </div>
       </div>
       <div class="action">
         <p>
-          <a href="#" class="large button">Crop Thumbnail</a>
+          <a href="#" class="large crop button">Crop Thumbnail</a>
         </p>
       </div>
     </div>
+    <% if false %>
     <div id="edit-feature">
       <div class="full-image">
         <%= image_tag @image.file.url(:full), :id => :feature, :width => @image.image_width, :height => @image.image_height %>
@@ -66,10 +72,11 @@
       </div>
       <div class="action">
         <p>
-          <a href="#" class="large button">Crop Feature</a>
+          <a href="#" class="large crop button">Crop Feature</a>
         </p>
       </div>
     </div>
+    <% end %>
   </div>
 <% end %>
 
@@ -165,7 +172,7 @@ function updateThumb(coords) {
           });
 
 
-    $('#edit-thumb .action a.button').click(function(e) {
+    $('#edit-thumb .action a.crop.button').click(function(e) {
         $.ajax({
             url: '/admin/galleries/galleries/<%= @image.gallery_id %>/images/<%= @image._id %>/crop',
              data: '_method=put&crop[version]=thumbnail&crop[width]=<%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.width %>&crop[height]= <%= Breeze::Gallery::GalleryUploader::THUMB_SIZE.height %>&crop[x]=' + thumb_offset[0] + '&crop[y]=' + thumb_offset[1] + '&crop[w]=' + thumb_offset[2] + '&crop[h]=' + thumb_offset[3],
@@ -173,7 +180,7 @@ function updateThumb(coords) {
         });
     });
 
-    $('#edit-feature .action a.button').click(function(e) {
+    $('#edit-feature .action a.crop.button').click(function(e) {
       $.ajax({
              url: '/admin/galleries/galleries/<%= @image.gallery_id %>/images/<%= @image._id %>/crop',
              data: '_method=put&crop[version]=preview&crop[width]=<%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.width %>&crop[height]= <%= Breeze::Gallery::GalleryUploader::PREVIEW_SIZE.height %>&crop[x]=' + preview_offset[0] + '&crop[y]=' + preview_offset[1] + '&crop[w]=' + preview_offset[2] + '&crop[h]=' + preview_offset[3],
@@ -181,10 +188,10 @@ function updateThumb(coords) {
            });
       });
 
-    $('#edit-image .action a.button').click(function(e) {
+    $('#edit-image .action a.crop.button').click(function(e) {
       $.ajax({
              url: '/admin/galleries/galleries/<%= @image.gallery_id %>/images/<%= @image._id %>/crop',
-             data: '_method=put&crop[version]=full&crop[width]=' + full_offset[2] + '&crop[height]=' + full_offset[3] + '&crop[x]=' + full_offset[0] + '&crop[y]=' + full_offset[1] + '&crop[w]=' + full_offset[2] + '&crop[h]=' + full_offset[3],
+             data: '_method=put&crop[version]=full&crop[width]=<%= Breeze::Gallery::GalleryUploader::FULL_SIZE.width %>&crop[height]=<%= Breeze::Gallery::GalleryUploader::FULL_SIZE.height %>&&crop[x]=' + full_offset[0] + '&crop[y]=' + full_offset[1] + '&crop[w]=' + full_offset[2] + '&crop[h]=' + full_offset[3],
              type: 'post'
            });
     });
